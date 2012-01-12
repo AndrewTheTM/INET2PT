@@ -2,7 +2,8 @@
 //
 // Route converter for INET to PT LIN files
 // Author: Andrew Rohne arohne@oki.org Licensed open source 2012 GPLv3
-
+//
+// Version 1.0
 
 #include "stdafx.h"
 #include <string>
