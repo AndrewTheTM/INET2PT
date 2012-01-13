@@ -10,6 +10,7 @@
 #include <vector>
 #include <stdio.h>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -141,8 +142,10 @@ void processAM(string filename){
 							tmp.Circular=true;							
 					}
 
-					if(line.find("ID=")!=string::npos)
-						tmp.LongName=line.substr(line.find("ID=")+3,(line.find(",",line.find("ID="))-line.find("ID=")));
+					if(line.find("ID=")!=string::npos){
+						string tmpLN=line.substr(line.find("ID=")+4,(line.find(",",line.find("ID="))-line.find("ID=")-5));
+						tmp.LongName=tmpLN.substr(0,tmpLN.find_last_not_of(" ")+1);
+					}
 
 					if(line.find("N=")!=string::npos){
 						string tmpN=line.substr(line.find("N=")+2,line.length());
@@ -221,8 +224,10 @@ void processMDPM(string filename,int period){
 							tmp.Circular=true;							
 					}
 
-					if(line.find("ID=")!=string::npos)
-						tmp.LongName=line.substr(line.find("ID=")+3,(line.find(",",line.find("ID="))-line.find("ID=")));
+					if(line.find("ID=")!=string::npos){
+						string tmpLN=line.substr(line.find("ID=")+4,(line.find(",",line.find("ID="))-line.find("ID=")-5));
+						tmp.LongName=tmpLN.substr(0,tmpLN.find_last_not_of(" ")+1);
+					}
 
 					if(line.find("N=")!=string::npos){
 						string tmpN=line.substr(line.find("N=")+2,line.length());
@@ -260,10 +265,66 @@ void processMDPM(string filename,int period){
 skip:;
 }
 
+string itos(int number)
+{
+	stringstream ss;
+	ss << number;
+	return ss.str();
+}
+
 void writePTOut(string filename)
 {
 	int col=70; //this is the max column width
-
+	ofstream outFile;
+	outFile.open(filename);
+	outFile << ";;<<PT>><<LINE>>;;" << endl;
+	string outLine="";
+	for(unsigned int t=0;t<transitRoutes.size();t++)
+	{
+		// NOTE: READ THIS!!!!!!!!!
+		// The faresystem is hard coded.  This is a really bad practice, but there is no equivalent in INET (except reading the TFARES input
+		// file, which would be a pain in the rear.  YOU WANT TO CHANGE THIS, either globally or via Cube.
+		
+		outLine="LINE NAME=\"M"+itos(transitRoutes[t].Mode)+"L"+itos(transitRoutes[t].Line)+"\", "+"MODE="+itos(transitRoutes[t].Mode)+ ", "+
+			"FARESYSTEM=6, "+"LONGNAME=\""+transitRoutes[t].LongName+"\", "+"HEADWAY[1]="+itos(transitRoutes[t].AMHeadway)+", "+
+			"HEADWAY[2]="+itos(transitRoutes[t].MDHeadway)+", HEADWAY[3]="+itos(transitRoutes[t].PMHeadway)+", ";
+		if(transitRoutes[t].OneWay)
+			outLine+="ONEWAY=T, ";
+		if(transitRoutes[t].Circular)
+			outLine+="CIRCULAR=T, ";
+		outLine+="OPERATOR="+itos(transitRoutes[t].Company)+", N=";
+		
+		for(unsigned int n=0;n<transitRoutes[t].nodeList.size();n++)
+		{
+			outLine+=itos(transitRoutes[t].nodeList[n]);
+			if(n<transitRoutes[t].nodeList.size()-1)
+				outLine+=", ";
+		}
+		
+		//split the line into col-sized pieces
+		vector <int> comma;
+		while(outLine.length()>col){
+			for(unsigned int sp=0;sp<=outLine.length();sp++)
+			{
+				if(outLine.substr(sp,1).compare(",")==0)
+					comma.push_back(sp);
+			}
+			for(unsigned int c=0;c<comma.size();c++){
+				if(comma[c]>col){
+					outFile << outLine.substr(0,comma[c-1]+2) << endl;
+					outLine="     "+outLine.substr(comma[c-1]+2,outLine.length());
+					break;
+				}
+				if(c==comma.size()-1){
+					outFile << outLine.substr(0,comma[c-1]+2) << endl;
+					outLine="     "+outLine.substr(comma[c-1]+2,outLine.length());
+				}
+			}
+			comma.clear();
+		}
+		outFile << outLine << endl;
+	}
+	outFile.close();
 }
 
 
@@ -289,8 +350,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		processMDPM((string)argv[4],1);
 		printf("Completed PM.\n\n");
 	}
-
+	printf("Writing output...\n");
 	writePTOut((string)argv[1]);
+	printf("Completed!\n\n");
 
 	return 0;
 }
