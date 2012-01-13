@@ -2,39 +2,20 @@
     CONSOLE APPLICATION : INET2PT Project Overview
 ========================================================================
 
-AppWizard has created this INET2PT application for you.
+This is a console application to convert INET transit files (used in 
+TranPlan transportation modeling software) to Cube Voyager PT transit
+LIN files.
 
-This file contains a summary of what you will find in each of the files that
-make up your INET2PT application.
+Programmed in C++ using Microsoft Visual C++ Express Edition
 
+Compile and run without options for program arguments.
 
-INET2PT.vcxproj
-    This is the main project file for VC++ projects generated using an Application Wizard.
-    It contains information about the version of Visual C++ that generated the file, and
-    information about the platforms, configurations, and project features selected with the
-    Application Wizard.
+NOTE: in the source code, the FARESYSTEM attribute is hard coded.  This
+is generally a bad practice, but this is something that should be 
+manually fixed.  If you have a faresystem to use, change this code (it
+is noted!) prior to compiling.  If you need multiple fares, open the 
+resulting file in Cube and fix as necessary.
 
-INET2PT.vcxproj.filters
-    This is the filters file for VC++ projects generated using an Application Wizard. 
-    It contains information about the association between the files in your project 
-    and the filters. This association is used in the IDE to show grouping of files with
-    similar extensions under a specific node (for e.g. ".cpp" files are associated with the
-    "Source Files" filter).
+Author: Andrew Rohne - arohne@oki.org - www.oki.org
+License: 2012 GPLv3
 
-INET2PT.cpp
-    This is the main application source file.
-
-/////////////////////////////////////////////////////////////////////////////
-Other standard files:
-
-StdAfx.h, StdAfx.cpp
-    These files are used to build a precompiled header (PCH) file
-    named INET2PT.pch and a precompiled types file named StdAfx.obj.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
-
-/////////////////////////////////////////////////////////////////////////////
