@@ -120,7 +120,7 @@ void processAM(string filename){
 				case 0: //begin collection
 
 					if(line.find("M=")!=string::npos)
-						tmp.Mode=stoi(line.substr(line.find("M=")+2,(line.find(",",line.find("M="))-line.find("M="))));
+						tmp.Mode=stoi(line.substr(line.find("M=")+2,(line.find(",",line.find("M="))-line.find("M=")))-8); //NOTE THE -8 HERE!
 
 					if(line.find("L=")!=string::npos)
 						tmp.Line=stoi(line.substr(line.find("L=")+2,(line.find(",",line.find("L="))-line.find("L="))));
@@ -283,11 +283,11 @@ void writePTOut(string filename)
 	for(unsigned int t=0;t<transitRoutes.size();t++)
 	{
 		// NOTE: READ THIS!!!!!!!!!
-		// The faresystem is hard coded.  This is a really bad practice, but there is no equivalent in INET (except reading the TFARES input
-		// file, which would be a pain in the rear.  YOU WANT TO CHANGE THIS, either globally or via Cube.
+		// The faresystem and vehicletypes are hard coded.  This is a really bad practice, but there is no equivalent in INET to these.
+		// YOU WANT TO CHANGE THIS, either globally or via Cube.
 		
 		outLine="LINE NAME=\"M"+itos(transitRoutes[t].Mode)+"L"+itos(transitRoutes[t].Line)+"\", "+"MODE="+itos(transitRoutes[t].Mode)+ ", "+
-			"FARESYSTEM=6, "+"LONGNAME=\""+transitRoutes[t].LongName+"\", "+"HEADWAY[1]="+itos(transitRoutes[t].AMHeadway)+", "+
+			"FARESYSTEM=7, VEHICLETYPE=1, "+"LONGNAME=\""+transitRoutes[t].LongName+"\", "+"HEADWAY[1]="+itos(transitRoutes[t].AMHeadway)+", "+
 			"HEADWAY[2]="+itos(transitRoutes[t].MDHeadway)+", HEADWAY[3]="+itos(transitRoutes[t].PMHeadway)+", ";
 		if(transitRoutes[t].OneWay)
 			outLine+="ONEWAY=T, ";
