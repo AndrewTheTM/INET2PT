@@ -99,6 +99,7 @@ bool compareTransit(tRoute routeObj, int period)
 			return true;
 		}
 	}
+	return false;
 }			
 
 void processAM(string filename){
@@ -274,7 +275,7 @@ string itos(int number)
 
 void writePTOut(string filename)
 {
-	int col=70; //this is the max column width
+	unsigned int col=70; //this is the max column width
 	ofstream outFile;
 	outFile.open(filename);
 	outFile << ";;<<PT>><<LINE>>;;" << endl;
@@ -302,7 +303,7 @@ void writePTOut(string filename)
 		}
 		
 		//split the line into col-sized pieces
-		vector <int> comma;
+		vector <unsigned int> comma;
 		while(outLine.length()>col){
 			for(unsigned int sp=0;sp<=outLine.length();sp++)
 			{
@@ -334,6 +335,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		printf("\nINET Route to PT LIN converter\n");
 		printf("Written by Andrew Rohne, OKI Regional Council, 2012.  Licensed under GPLv3\n\n");
 		printf("Usage: \n     INET2PT <output LIN file> <am transit file> [<md transit file> <pm transit file>]\n\n");
+		return 0;
 	}
 	if(argc>=3){
 		printf("Processing AM...\n");
